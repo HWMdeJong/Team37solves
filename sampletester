@@ -1,7 +1,11 @@
 #!/bin/bash
 
-file=$1
+if [[ -z $1 ]]; then
+  echo "No input specified"
+  exit
+fi
 
+file=$1
 for i in input/$file*; do
   echo "Output of " $i
   bin/$file < input/$file 
