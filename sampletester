@@ -7,9 +7,11 @@ fi
 
 file=$1
 for i in input/$file*; do
+  i=`basename $i`
   echo "Output of " $i
-  bin/$file < input/$file 
+  bin/${file} < input/$i 
   
   echo "Diff result: "
   bin/$file< input/$i | diff - output/${i/.in}.out
+  echo _________________________________
 done
