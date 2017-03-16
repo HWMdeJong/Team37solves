@@ -1,0 +1,11 @@
+#!/bin/bash
+
+file=$1
+
+for i in input/$file*; do
+  echo "Output of " $i
+  bin/$file < input/$file 
+  
+  echo "Diff result: "
+  bin/$file< input/$i | diff - output/${i/.in}.out
+done
