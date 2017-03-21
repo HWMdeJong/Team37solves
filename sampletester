@@ -1,17 +1,23 @@
 #!/bin/bash
 
 if [[ -z $1 ]]; then
-  echo "No input specified"
-  exit
+	echo "No input specified"
+  	exit
 fi
 
 file=$1
-for i in input/$file*; do
-  i=`basename $i`
-  echo "Output of " $i
-  bin/${file} < input/$i 
-  
-  echo "Diff result: "
-  bin/$file< input/$i | diff - output/${i/.in}.out
-  echo _________________________________
+for in in input/$file*; do
+	out=output/`basename ${in/.in}.out`
+	sol=solution/`basename ${in/.in}.out`
+	echo ${in^^}
+
+	bin/$file < $in >$out
+	if [[ ! -f $sol || $2 == 0 ]]; then
+		cat $out
+	else
+		diff --color=always -y <(nl $out -s":  ")  <(nl $sol -s":  ")
+		diff -q $sol $out
+	fi
+	echo _________________________________
+	echo ""
 done
