@@ -6,5 +6,5 @@ Use of sampletester <br>
 <pre> runs bin/PROBLEM for all input/PROBLEM*.in, result stored in output/OUTPUT*.out,
  IF solution/INPUT*.out exists it shows the diff with the output otherwise the output is printed </pre>
 
-./sampltester INPUT 0
+./sampltester OUTPUT 0
 <pre> Same as above but forces it to only print the output
