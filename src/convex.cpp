@@ -2,13 +2,17 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 
-int64_t N;
-const long double pi = M_PI,
-				  M = 20000000,
-			 	  r = M - 10.0;
+int64_t N, P = 4000000;
+const long double pi = M_PI;
+
+int64_t M = 20000000,
+		r = M - 10.0;
+
+double lb, ub;
 
 struct Point {
 	int64_t x, y;
@@ -18,8 +22,8 @@ struct Point {
 	}
 };
 
+Point mid = { M, M }, curr;
 vector<Point> ps;
-
 
 // Check orientation of point triplets
 int64_t orient(Point p, Point q, Point r) {
@@ -50,39 +54,68 @@ vector<Point> convex_hull() {
     return hull;
 }
 
-int main() {
-	cout << "HUH" << endl;
-	cin >> N;
-	vector<Point> hull;
-	double eps = 0.01;
-	cout << "wtf" << endl;
-	while(hull.size() < min(N,(int64_t)400000) ){
-		for (int i = 0; i < N; i++) {
-			long double x = M + r * cos(2 * pi * i / N),
-						y = M + r * sin(2 * pi * i / N);
-			int64_t		px = (int64_t)round(x),
-						py = (int64_t)round(y);
-			if((px - x)*(px - x) + (py - y)*(py - y) < eps){
-				ps.push_back({px,py});
-			}
-			// ps[i] = { (int64_t)round(x), (int64_t)round(y) };
-			// ps[4 * i + 1] = { (int64_t)floor(x), (int64_t)ceil(y) };
-			// ps[4 * i + 2] = { (int64_t)ceil(x) , (int64_t)floor(y) };
-			// ps[4 * i + 3] = { (int64_t)ceil(x) , (int64_t)ceil(y) };
+bool valid(const Point& C) {
+	const Point A = curr,
+				B = mid;
 
-			// if (x >= 0 && y >= 0) ps[4 * i + 3] = { (int64_t)M, (int64_t)M };
-			// if (x < 0 && y >= 0) ps[4 * i + 1] = { (int64_t)M, (int64_t)M };
-			// if (x >= 0 && y < 0) ps[4 * i + 2] = { (int64_t)M, (int64_t)M };
-			// if (x < 0 && y < 0) ps[4 * i] = { (int64_t)M, (int64_t)M };
+	Point 	BA = { B.x - A.x, B.y - A.y },
+			CA = { C.x - A.x, C.y - A.y };
+
+	int64_t dot = BA.x * CA.x + BA.y * CA.y,
+			pcross = BA.x * CA.y - BA.y * CA.x;
+
+	long double rad = atan2(pcross, dot),
+				angle = abs(rad * 180.0 / pi);
+
+	return angle < ub && angle > lb;
+}
+
+int main() {
+	cin >> N;
+
+	lb = 80,
+	ub = 90.0;
+
+	cout << setprecision(20) << lb << " " << ub << endl;
+
+	ps.push_back({ M + r, M });
+	curr = ps[0];
+
+	for (int i = 1; i < P; i++) {
+		long double x = M + r * cos(2 * pi * i / P),
+					y = M + r * sin(2 * pi * i / P);
+
+		Point a = { (int64_t)floor(x), (int64_t)floor(y) };
+		if (valid(a)) {
+			curr = a;
+			ps.push_back(a);
 		}
 
-		hull = convex_hull();
-		cout << hull.size() << endl;
-		eps *= 2;
-		N *= 2;
+		Point b = { (int64_t)floor(x), (int64_t)ceil(y) };
+		if (valid(b)) {
+			curr = b;
+			ps.push_back(b);
+		}
+
+		Point c = { (int64_t)ceil(x) , (int64_t)floor(y) };
+		if (valid(c)) {
+			curr = c;
+			ps.push_back(c);
+		}
+
+		Point d = { (int64_t)ceil(x) , (int64_t)ceil(y) };
+		if (valid(d)) {
+			curr = d;
+			ps.push_back(d);
+		}
 	}
 
-	// for (int i = 0 ; i < hull.size(); i++) {
+
+	cout << ps.size() << endl;
+	vector<Point> hull = convex_hull();
+	cout << hull.size() << endl;
+
+	// for (int i = 0 ; i < N; i++) {
 	// 	cout << "(" << hull[i].x << "," << hull[i].y << "), ";
 	// }
 
