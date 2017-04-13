@@ -12,9 +12,9 @@ for in in input/$file*; do
 	echo ${in^^}
 
 	bin/$file < $in | tee $out
-	if [[ ! -f $sol || $2 == 0 ]]; then
-		cat $out
-	else
+	if [[ -f $sol || $2 != 0 ]]; then
+		echo ""
+		echo "DIFF:"
 		diff -y <(nl $out -s":  ")  <(nl $sol -s":  ")
 		diff -q $sol $out
 	fi
