@@ -11,11 +11,11 @@ for in in input/$file*; do
 	sol=solution/`basename ${in/.in}.out`
 	echo ${in^^}
 
-	bin/$file < $in >$out
+	bin/$file < $in | tee $out
 	if [[ ! -f $sol || $2 == 0 ]]; then
 		cat $out
 	else
-		diff --color=always -y <(nl $out -s":  ")  <(nl $sol -s":  ")
+		diff -y <(nl $out -s":  ")  <(nl $sol -s":  ")
 		diff -q $sol $out
 	fi
 	echo _________________________________
