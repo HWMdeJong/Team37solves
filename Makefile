@@ -1,4 +1,4 @@
-all: funnygames mixedfractions dicegame convex
+all: anti11
 	
 funnygames: src/funnygames.cpp
 	g++ -o bin/funnygames -O3 -std=c++11 src/funnygames.cpp
@@ -11,3 +11,6 @@ dicegame: src/dicegame.cpp
 
 convex: src/convex.cpp
 	g++ -o bin/convex -O3 -std=c++11 src/convex.cpp
+
+anti11: src/anti11.cpp
+	g++ -o bin/anti11 -O3 -std=c++11 src/anti11.cpp
